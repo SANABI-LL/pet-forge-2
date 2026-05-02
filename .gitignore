@@ -1,0 +1,8 @@
+node_modules/
+.env
+*.pyc
+__pycache__/
+.playwright-mcp/
+
+routes/apng/tools/output/
+routes/apng/tools/reference/

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<title>pet-forge demo · soft orb idle</title>
+<style>
+  :root {
+    --bg: #f7fafc;
+    --shadow: rgba(36, 91, 112, 0.16);
+    --eye: #203047;
+    --eye-shine: #ffffff;
+    --mouth: #2f5366;
+    --breath-period: 4.8s;
+    --breath-min: 0.975;
+    --breath-max: 1.025;
+    --blink-min-gap: 2800;
+    --blink-max-gap: 6800;
+    --blink-duration: 145;
+  }
+
+  html,
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+  }
+
+  body {
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  #stage {
+    width: min(320px, 88vmin);
+    aspect-ratio: 1;
+    display: block;
+  }
+
+  #pet {
+    transform-box: view-box;
+    transform-origin: 100px 100px;
+    animation: breathe var(--breath-period) ease-in-out infinite;
+  }
+
+  #shadow {
+    transform-origin: 100px 155px;
+    animation: shadowPulse var(--breath-period) ease-in-out infinite;
+  }
+
+  .eye {
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: transform 75ms ease-out;
+  }
+
+  .eye.blink {
+    transform: scaleY(0.06);
+  }
+
+  @keyframes breathe {
+    0%,
+    100% {
+      transform: translateY(1px) scale(var(--breath-min));
+    }
+    50% {
+      transform: translateY(-2px) scale(var(--breath-max));
+    }
+  }
+
+  @keyframes shadowPulse {
+    0%,
+    100% {
+      opacity: 0.72;
+      transform: scaleX(0.96);
+    }
+    50% {
+      opacity: 0.52;
+      transform: scaleX(1.04);
+    }
+  }
+</style>
+</head>
+<body>
+<svg id="stage" viewBox="0 0 200 200" role="img" aria-label="Soft orb desktop pet idle animation" xmlns="http://www.w3.org/2000/svg">
+  <ellipse id="shadow" cx="100" cy="159" rx="48" ry="9" fill="var(--shadow)"/>
+
+  <g id="pet">
+    <image href="soft-orb.svg" x="36" y="31" width="128" height="128"/>
+
+    <g id="face">
+      <ellipse class="eye" cx="82" cy="92" rx="6.4" ry="8.2" fill="var(--eye)"/>
+      <ellipse class="eye" cx="118" cy="92" rx="6.4" ry="8.2" fill="var(--eye)"/>
+      <circle cx="84.5" cy="88.5" r="1.9" fill="var(--eye-shine)"/>
+      <circle cx="120.5" cy="88.5" r="1.9" fill="var(--eye-shine)"/>
+      <path d="M91 109 C96 114 104 114 109 109" fill="none" stroke="var(--mouth)" stroke-width="3.4" stroke-linecap="round"/>
+    </g>
+  </g>
+</svg>
+
+<script>
+  const eyes = document.querySelectorAll('.eye');
+  const root = getComputedStyle(document.documentElement);
+  const minGap = parseInt(root.getPropertyValue('--blink-min-gap'), 10);
+  const maxGap = parseInt(root.getPropertyValue('--blink-max-gap'), 10);
+  const blinkMs = parseInt(root.getPropertyValue('--blink-duration'), 10);
+
+  function blinkOnce() {
+    eyes.forEach((eye) => eye.classList.add('blink'));
+    setTimeout(() => eyes.forEach((eye) => eye.classList.remove('blink')), blinkMs);
+  }
+
+  function scheduleBlink() {
+    const gap = minGap + Math.random() * (maxGap - minGap);
+    setTimeout(() => {
+      blinkOnce();
+      if (Math.random() < 0.12) {
+        setTimeout(blinkOnce, blinkMs + 120);
+      }
+      scheduleBlink();
+    }, gap);
+  }
+
+  scheduleBlink();
+</script>
+</body>
+</html>

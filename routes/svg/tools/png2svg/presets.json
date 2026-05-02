@@ -1,0 +1,60 @@
+{
+  "_comment": "vtracer 调参预设。png2svg.py 已接入 --preset <name> 和 --list-presets；也可以用 --n-colors / --scale 覆盖单次运行参数。",
+
+  "apple-precise": {
+    "_description": "扁平卡通 / 圆角凸起 / 软橡胶质感角色（云朵、软糖、精致圆润风）",
+    "n_colors": 8,
+    "scale": "auto",
+    "vtracer": {
+      "colormode": "color",
+      "hierarchical": "stacked",
+      "mode": "spline",
+      "filter_speckle": 48,
+      "color_precision": 6,
+      "layer_difference": 32,
+      "corner_threshold": 80,
+      "length_threshold": 8.0,
+      "max_iterations": 10,
+      "splice_threshold": 45,
+      "path_precision": 2
+    }
+  },
+
+  "pixel-art": {
+    "_description": "整像素角色（FC / GBA 风）。mode polygon 保直角，filter_speckle 0 保留所有像素",
+    "n_colors": 16,
+    "scale": 1,
+    "vtracer": {
+      "colormode": "color",
+      "hierarchical": "stacked",
+      "mode": "polygon",
+      "filter_speckle": 0,
+      "color_precision": 8,
+      "layer_difference": 0,
+      "corner_threshold": 180,
+      "length_threshold": 1.0,
+      "max_iterations": 10,
+      "splice_threshold": 0,
+      "path_precision": 0
+    }
+  },
+
+  "high-detail": {
+    "_description": "复杂插画 / 多色 / 渐变较多。慎用 SVG 路线本身就不擅长这种，建议看 APNG 路线",
+    "n_colors": 24,
+    "scale": "auto",
+    "vtracer": {
+      "colormode": "color",
+      "hierarchical": "stacked",
+      "mode": "spline",
+      "filter_speckle": 24,
+      "color_precision": 7,
+      "layer_difference": 16,
+      "corner_threshold": 60,
+      "length_threshold": 4.0,
+      "max_iterations": 15,
+      "splice_threshold": 30,
+      "path_precision": 3
+    }
+  }
+}

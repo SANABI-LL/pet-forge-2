@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<title>pet-forge demo · GPT pear idle</title>
+<style>
+  :root {
+    --bg: #f8faf6;
+    --shadow: rgba(42, 87, 50, 0.16);
+    --breath-period: 4.8s;
+    --breath-min: 0.985;
+    --breath-max: 1.018;
+  }
+
+  html,
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+  }
+
+  body {
+    display: grid;
+    min-height: 100vh;
+    place-items: center;
+  }
+
+  #stage {
+    width: min(340px, 88vmin);
+    aspect-ratio: 1;
+    display: block;
+  }
+
+  #pet {
+    transform-box: view-box;
+    transform-origin: 100px 103px;
+    animation: breathe var(--breath-period) ease-in-out infinite;
+  }
+
+  #shadow {
+    transform-origin: 100px 164px;
+    animation: shadowPulse var(--breath-period) ease-in-out infinite;
+  }
+
+  @keyframes breathe {
+    0%,
+    100% {
+      transform: translateY(1px) scale(var(--breath-min));
+    }
+    50% {
+      transform: translateY(-2px) scale(var(--breath-max));
+    }
+  }
+
+  @keyframes shadowPulse {
+    0%,
+    100% {
+      opacity: 0.72;
+      transform: scaleX(0.96);
+    }
+    50% {
+      opacity: 0.5;
+      transform: scaleX(1.05);
+    }
+  }
+</style>
+</head>
+<body>
+<svg id="stage" viewBox="0 0 200 200" role="img" aria-label="GPT pear desktop pet idle animation" xmlns="http://www.w3.org/2000/svg">
+  <ellipse id="shadow" cx="100" cy="164" rx="43" ry="8" fill="var(--shadow)"/>
+  <g id="pet">
+    <image href="pear.svg" x="22" y="14" width="170" height="170"/>
+  </g>
+</svg>
+</body>
+</html>
