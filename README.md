@@ -28,9 +28,33 @@ Choose SVG if you want precise loops, small files, and editable animation logic.
 
 ## Demo: GPT Pear SVG Route
 
-<p>
-  <img src="examples/svg-gpt-pear/pear.svg" width="220" alt="GPT-generated pear desktop pet converted to SVG">
-</p>
+<table>
+  <tr>
+    <th align="center">1. Source PNG</th>
+    <th align="center">png2svg + vtracer</th>
+    <th align="center">2. Generated SVG</th>
+  </tr>
+  <tr>
+    <td align="center" width="35%">
+      <img src="examples/svg-gpt-pear/source.png" width="220" alt="GPT pear source PNG">
+    </td>
+    <td align="center" width="30%">
+      <strong>PNG -> SVG</strong><br>
+      transparent background<br>
+      low-color quantization<br>
+      raster-to-vector tracing<br>
+      <code>--preset apple-precise</code>
+    </td>
+    <td align="center" width="35%">
+      <img src="examples/svg-gpt-pear/pear.svg" width="220" alt="GPT pear converted SVG">
+    </td>
+  </tr>
+  <tr>
+    <td align="center">Original raster image. Best when the background is real alpha, not a checkerboard screenshot.</td>
+    <td align="center">The tool cleans transparent pixels, limits colors, then asks vtracer to trace paths.</td>
+    <td align="center">Vector output: 13 paths, about 21 KB. Easier to animate and inspect, but small details are simplified.</td>
+  </tr>
+</table>
 
 The primary demo uses a GPT-generated transparent PNG, converts it with vtracer, and wraps the result in a tiny idle animation:
 
