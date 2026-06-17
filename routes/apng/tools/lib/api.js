@@ -125,6 +125,9 @@ export async function doubaoGenerateVideo(prompt, refImageUrl, opts = {}) {
   const body = {
     model: opts.model || DOUBAO_VIDEO_MODEL,
     content,
+    // 火山方舟 Seedance 官方去水印参数(body 独立字段,非 prompt --watermark)。
+    // 默认带水印 → 这里默认 false,生成即无水印;传 { watermark: true } 可恢复。
+    watermark: opts.watermark === true,
   };
 
   const res = await fetch(`${DOUBAO_BASE}/contents/generations/tasks`, {
