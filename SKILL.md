@@ -179,6 +179,7 @@ py -3.13 -m rembg i input.png input-clean.png
 | "怎么从 v1 改到 v2 / 锁定流程" | routes/svg/conventions/iteration.md |
 | "多状态角色母版怎么建" | routes/svg/conventions/layered-master.md |
 | "手脚/脸/尾巴怎么变形不崩" | routes/svg/conventions/rig-first.md |
+| "转头 / 抬头 / 低头 / 眼睛跟随 / 脸部动画 / 视线方向" | routes/svg/conventions/head-motion-axis.md |
 | "调参页怎么变成交付文件" | routes/svg/conventions/tuner-to-canonical.md |
 | "SVG 状态怎么验收" | routes/svg/conventions/validation-runbook.md |
 | "preset 是什么 / 怎么用" | routes/svg/presets/<preset>.md |
