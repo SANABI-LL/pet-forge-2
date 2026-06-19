@@ -108,6 +108,47 @@ py -3.13 routes\svg\tools\png2svg\png2svg.py examples\svg-gpt-pear\source.png ex
 
 `examples/svg-soft-orb/` 是一个更小的合成基准 demo，用来对比手工低色数源图和 GPT 生成源图。
 
+## 横向对比：工具路线 vs GPT-5.5 Pro 直接生成
+
+同一张参考图（上面的源 PNG），换一种生成方式，结果完全不同。左边是 SVG 工具路线用 vtracer 追踪出来的，右边是把同一张参考图直接交给 GPT-5.5 Pro 写出来的 SVG。
+
+<table>
+  <tr>
+    <th align="center" width="50%">工具路线 · <code>png2svg + vtracer</code></th>
+    <th align="center" width="50%">GPT-5.5 Pro · 直接生成 SVG</th>
+  </tr>
+  <tr>
+    <td align="center"><img src="examples/svg-gpt-pear/pear.svg" width="240" alt="vtracer 追踪生成的 SVG"></td>
+    <td align="center"><img src="examples/svg-gpt-pear/pear-gpt-5.5-pro.svg" width="240" alt="GPT-5.5 Pro 直接编写的 SVG"></td>
+  </tr>
+  <tr>
+    <td align="center">按颜色区域把位图追踪成矢量。轮廓还原得不错，但眼睛高光、笑嘴、舌头这些小细节被压扁或糊掉，path 也没有语义。</td>
+    <td align="center">模型直接重画一份结构化 SVG：渐变身体、干净的五官、命名图层。视觉更接近成品，但这是模型自己的诠释，不是逐像素还原。</td>
+  </tr>
+</table>
+
+| 维度 | 工具路线（vtracer 追踪） | GPT-5.5 Pro 直接生成 |
+|---|---|---|
+| 输入 | 透明 PNG | 参考图（可加文字描述） |
+| path 数量 | 13 条匿名 path | 15 条带语义 id 的 path |
+| 文件大小 | 约 21 KB | 约 12 KB |
+| 结构 | 扁平，无分组 | 分组（`plant-and-limbs` / `body` / `face`），图层命名 |
+| 填充 | 纯色 | 渐变 + 高斯模糊 + `clipPath` |
+| 可动画性 | 低，path 无语义，难按部位绑定 | 高，眼睛 / 嘴巴 / 手臂 / 腿可单独驱动 |
+| 保真度 | 轮廓接近源图，脸部细节有损 | 模型自己的诠释，非像素级还原 |
+| 无障碍 | 无 | 带 `title` / `desc`（ARIA） |
+
+两者不是替代关系：
+
+- 已经有满意的位图、想快速矢量化 -> 走 vtracer 追踪。
+- 想要一份干净、分好图层、能直接绑定动画的母版 -> 让前沿模型直接生成结构化 SVG，再接进模板。
+
+pet-forge 的 SVG 路线两种都能承接：工具追踪出的 path，和模型生成的结构化 SVG，都可以复制进 `routes/svg/templates/hello-idle.svg.html` 里调 CSS 变量和动画。
+
+**有条件的话，建议优先用 GPT-5.5 Pro 这类前沿模型直接生成 SVG**：输出结构更干净、分好图层、可直接绑定动画。如果没有，工具路线（vtracer 追踪）是完全可用的替代方案，只是脸部等细节需要后续手工清理。
+
+> `examples/svg-gpt-pear/pear-gpt-5.5-pro.svg` 保留了模型原样输出（含一个可删除的白色背景矩形，删掉即可得到透明背景）。
+
 ## 快速开始
 
 ### SVG 路线
