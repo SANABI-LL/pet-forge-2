@@ -1,95 +1,125 @@
 # pet-forge
 
-Tools, templates, and working notes for building your own SVG or APNG desktop pet.
+用于制作自定义 SVG / APNG 桌宠的工具、模板和工作说明。
 
-pet-forge can be used as a standalone toolkit or installed as a Codex skill. It is not a finished character pack; it is a reusable collection of route guides, prompt templates, SVG conventions, APNG post-processing scripts, examples, and state-mapping notes.
+pet-forge 可以作为独立工具包使用，也可以作为 Codex skill 使用。它不是成品角色包，而是一套可复用的路线指南、prompt 模板、SVG 约定、APNG 后处理脚本、示例和状态映射说明。
 
-## Routes
+## 路线
 
 ```
-[SVG route]                         [APNG route]
+[SVG 路线]                          [APNG 路线]
 
-reference image                     prompt template
-   -> remove background                -> AI reference image
-   -> PNG to SVG                       -> AI video with frame anchors
-   -> preset + SVG template            -> chroma key
-   -> self-contained .svg.html         -> .apng
+参考图                               prompt 模板
+   -> 去背景                            -> AI 参考图
+   -> PNG 转 SVG                        -> 首尾帧锚定的 AI 视频
+   -> preset + SVG 模板                 -> 绿幕抠图
+   -> 自包含 .svg.html                  -> .apng
 ```
 
-| Topic | SVG Route | APNG Route |
+| 主题 | SVG 路线 | APNG 路线 |
 |---|---|---|
-| Cost | Free after local setup | Uses paid/free generation APIs |
-| Control | High, every keyframe is editable | Lower, reruns are normal |
-| Looping | Exact CSS loops | Needs first/last-frame anchoring |
-| File size | Usually small | Usually hundreds of KB or more |
-| Best for | crisp vector pets, tiny runtime files | rich visual styles, fast drafts |
+| 成本 | 本地环境装好后免费 | 使用免费或付费生成 API |
+| 可控性 | 高，每个关键帧都能改 | 较低，重跑很常见 |
+| 循环 | 精确 CSS 循环 | 依赖首尾帧锚定 |
+| 文件大小 | 通常较小 | 通常数百 KB 或更大 |
+| 适合 | 清晰矢量桌宠、小运行时文件 | 丰富视觉风格、快速草稿 |
 
-Choose SVG if you want precise loops, small files, and editable animation logic. Choose APNG if you want fast visual exploration and are comfortable with generation APIs and post-processing.
+如果你想要精确循环、小文件和可编辑动画逻辑，选 SVG。
 
-## Using as a Codex Skill
+如果你想快速探索丰富视觉风格，并且能接受生成 API 和后处理，选 APNG。
 
-This repository includes `SKILL.md`, so Codex can use pet-forge as a skill when planning or building SVG/APNG desktop-pet assets. The skill points Codex toward the route docs, templates, tools, examples, and constraints in this repo instead of treating the task as a blank-page generation problem.
+## 作为 Codex Skill 使用
 
-Use it when you want Codex to help choose a route, convert a transparent PNG into SVG, prepare APNG generation prompts, post-process generated video into APNG, or wire a small runnable demo.
+本仓库包含 `SKILL.md`，因此 Codex 可以在规划或制作 SVG / APNG 桌宠资产时把 pet-forge 当作 skill 使用。这个 skill 会把 Codex 引导到仓库里的路线文档、模板、工具、示例和约束，而不是把任务当成从零生成。
 
-## Demo: GPT Pear SVG Route
+当你希望 Codex 帮你选择路线、把透明 PNG 转成 SVG、准备 APNG 生成 prompt、把生成视频后处理成 APNG，或接一个小型可运行 demo 时，可以使用它。
+
+## 先做角色拓扑盘点
+
+在套用头部、附属结构、嘴巴或身体约定之前，先盘点角色真实拥有什么结构。不要默认每个桌宠都有完整的头、身体、手脚和嘴巴。
+
+```mermaid
+flowchart TD
+  A["概念图 / 透明 PNG / 初始 SVG"] --> B["询问角色拓扑"]
+  B --> C["主体形态：只有头、头+身体、软团/物件，还是其他轮廓？"]
+  B --> D["脸部：眼睛、嘴巴、腮红、表情符号？"]
+  B --> E["附属结构：手、脚、耳朵、尾巴、触角、道具？"]
+  B --> F["支撑关系：接地、悬浮、贴边，还是由道具支撑？"]
+  B --> G["需要的动作：视线方向、表情、走路、挥手、弹跳、漂浮？"]
+
+  C --> H["只为角色需要的结构建立合同"]
+  D --> I["有脸部 / 嘴巴结构时才建 face plane / mouth rig"]
+  E --> J["只为真实存在的附属结构建立锚点"]
+  F --> K["按需要选择身体轴、重心、接触线或悬浮锚点"]
+  G --> L["读取对应 SVG convention 文档"]
+
+  H --> M["工程化母版：图层、id、origin、验证"]
+  I --> M
+  J --> M
+  K --> M
+  L --> M
+```
+
+例如：只有头的角色可能需要 face plane 和表情规则，但不需要脚部 rig；软团角色可能需要轮廓轴、悬浮锚点和 squash 规则，但没有嘴巴；完整吉祥物可能同时需要脸部、身体、附属结构和表情合同。
+
+## 演示：GPT 梨子 SVG 路线
 
 <table>
   <tr>
-    <th align="center">1. Source PNG</th>
+    <th align="center">1. 源 PNG</th>
     <th align="center">png2svg + vtracer</th>
-    <th align="center">2. Generated SVG</th>
+    <th align="center">2. 生成的 SVG</th>
   </tr>
   <tr>
     <td align="center" width="35%">
-      <img src="examples/svg-gpt-pear/source.png" width="220" alt="GPT pear source PNG">
+      <img src="examples/svg-gpt-pear/source.png" width="220" alt="GPT 梨子源 PNG">
     </td>
     <td align="center" width="30%">
       <strong>PNG -> SVG</strong><br>
-      transparent background<br>
-      low-color quantization<br>
-      raster-to-vector tracing<br>
+      透明背景<br>
+      低色数量化<br>
+      位图转矢量追踪<br>
       <code>--preset apple-precise</code>
     </td>
     <td align="center" width="35%">
-      <img src="examples/svg-gpt-pear/pear.svg" width="220" alt="GPT pear converted SVG">
+      <img src="examples/svg-gpt-pear/pear.svg" width="220" alt="GPT 梨子转换后的 SVG">
     </td>
   </tr>
   <tr>
-    <td align="center">Original raster image. Best when the background is real alpha, not a checkerboard screenshot.</td>
-    <td align="center">The tool cleans transparent pixels, limits colors, then asks vtracer to trace paths.</td>
-    <td align="center">Vector output: 13 paths, about 21 KB. Easier to animate and inspect, but small details are simplified.</td>
+    <td align="center">原始位图。背景最好是真 alpha 透明，不要用棋盘格截图。</td>
+    <td align="center">工具会清理透明像素、限制颜色数量，再让 vtracer 追踪路径。</td>
+    <td align="center">矢量输出：13 条 path，约 21 KB。更容易动画和检查，但小细节会被简化。</td>
   </tr>
 </table>
 
-The primary demo uses a GPT-generated transparent PNG, converts it with vtracer, and wraps the result in a tiny idle animation:
+主演示使用 GPT 生成的透明 PNG，经 vtracer 转成 SVG，再包进一个很小的 idle 动画：
 
-- Source PNG: `examples/svg-gpt-pear/source.png`
-- Generated SVG: `examples/svg-gpt-pear/pear.svg`
-- Runnable demo: `examples/svg-gpt-pear/idle.svg.html`
+- 源 PNG：`examples/svg-gpt-pear/source.png`
+- 生成的 SVG：`examples/svg-gpt-pear/pear.svg`
+- 可运行 demo：`examples/svg-gpt-pear/idle.svg.html`
 
-Reproduce the conversion:
+复现转换：
 
 ```powershell
 py -3.13 routes\svg\tools\png2svg\png2svg.py examples\svg-gpt-pear\source.png examples\svg-gpt-pear\pear.svg --preset apple-precise
 ```
 
-This run produced 13 SVG paths and a 21 KB SVG file. The important part is that the source is a real transparent PNG; a screenshot with a checkerboard background will vectorize the checkerboard too and produce poor output.
+这次运行会生成 13 条 SVG path，文件约 21 KB。关键是源图必须是真透明 PNG；带棋盘格背景的截图会把棋盘格也矢量化，输出会很差。
 
-`examples/svg-soft-orb/` is a smaller synthetic baseline demo for comparing a hand-made low-color source against a GPT-generated source.
+`examples/svg-soft-orb/` 是一个更小的合成基准 demo，用来对比手工低色数源图和 GPT 生成源图。
 
-## Quick Start
+## 快速开始
 
-### SVG Route
+### SVG 路线
 
 ```powershell
 git clone <pet-forge-repo>
 cd pet-forge
 
-# Open the starter SVG pet in a browser:
+# 在浏览器里打开初始 SVG 桌宠：
 # routes\svg\templates\hello-idle.svg.html
 
-# Optional: remove background first if your PNG is not transparent.
+# 可选：如果 PNG 不是透明背景，先去背景。
 py -3.13 -m pip install "rembg[cpu,cli]"
 py -3.13 -m rembg i your-character.png your-character-clean.png
 
@@ -97,11 +127,11 @@ py -3.13 -m pip install Pillow numpy scipy vtracer
 py -3.13 routes\svg\tools\png2svg\png2svg.py your-character-clean.png character.svg --preset apple-precise
 ```
 
-Then copy the generated SVG paths into `routes/svg/templates/hello-idle.svg.html` and tune the CSS variables/presets.
+然后把生成的 SVG path 复制进 `routes/svg/templates/hello-idle.svg.html`，再调 CSS 变量和 preset。
 
-The PNG-to-SVG step uses vtracer as the vectorization engine. It works best for simple, low-color, clean-edged graphics; complex photos, gradients, hair, texture, and noisy edges can produce huge or poor SVG output. Use the APNG route or redraw key shapes when the source image is complex.
+PNG 转 SVG 这一步使用 vtracer 作为矢量化引擎。它最适合简单、低色数、边界干净的图形；复杂照片、渐变、毛发、纹理和噪点边缘可能生成巨大或很差的 SVG。源图复杂时，优先走 APNG 路线，或手工重画关键 SVG 结构。
 
-### APNG Route
+### APNG 路线
 
 ```powershell
 git clone <pet-forge-repo>
@@ -111,20 +141,20 @@ npm install
 py -3 -m pip install Pillow numpy
 
 copy .env.example .env
-# Fill in your API keys in .env.
+# 在 .env 里填写你的 API key。
 
 node test-api.js
 node gen-images.js --prompt "A cute chibi ..." --output reference/main-ref.png --api doubao
 node gen-video.js idle-dozing --image reference/main-ref.png --last-frame reference/main-ref.png --api doubao
 ```
 
-If you need to rerun chroma key manually:
+如果需要手动重跑绿幕抠图：
 
 ```powershell
 py chroma_key.py output/idle-dozing/doubao-video.mp4 output/idle-dozing/result.apng --plays 0
 ```
 
-## Repository Layout
+## 仓库结构
 
 ```
 pet-forge/
@@ -147,16 +177,16 @@ pet-forge/
 └── examples/
 ```
 
-## What This Repo Does Not Do
+## 本仓库不做什么
 
-- It does not include finished character assets.
-- It does not ship private source project files.
-- It does not provide API keys or pay for generation services.
-- It does not make aesthetic decisions for you.
-- It does not promise one-click generation of a complete multi-state pet.
+- 不包含成品角色资产。
+- 不附带私有源项目文件。
+- 不提供 API key，也不替你支付生成服务费用。
+- 不替你决定最终审美。
+- 不承诺一键生成完整多状态桌宠。
 
-## License
+## 许可
 
-The repository documentation, templates, and original wrapper code are MIT licensed. See [LICENSE](LICENSE).
+本仓库的文档、模板和原创包装代码使用 MIT 许可。见 [LICENSE](LICENSE)。
 
-Some scripts were adapted from earlier internal prototypes; public releases should keep source/attribution notes where applicable. Character designs, generated art, and product assets are separate from this toolkit and are not included.
+部分脚本改编自早期内部原型；公开发布时应在适用位置保留来源和署名说明。角色设计、生成图和产品资产与本工具包分离，不包含在仓库内。

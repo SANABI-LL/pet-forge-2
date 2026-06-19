@@ -33,11 +33,12 @@
 
 ## 第一轮响应模板
 
-skill 触发后，Claude 第一句话不要写代码，先**确认 3 件事**：
+skill 触发后，Claude 第一句话不要写代码，先**确认 4 件事**：
 
 1. **角色是什么**："你想做的角色是什么？（例：橘猫 / 机器人 / 蘑菇 / 你已有的设定...）"
-2. **审美方向**："想要什么风格？（例：苹果精致风 / 像素风 / 蹦跳多巴胺 / 禅宗极简 / 你给参考图）"
-3. **路线倾向**："你想要 SVG 还是 APNG？两者特性差异大：[列两路线对比表]，没想好的话先选 SVG（不付费、可热改）"
+2. **角色拓扑**："它是只有头、头+身体，还是一团主体？有没有手脚、耳朵、尾巴、触角、道具、眼睛、嘴巴？是站地、悬浮还是贴边？"
+3. **审美方向**："想要什么风格？（例：苹果精致风 / 像素风 / 蹦跳多巴胺 / 禅宗极简 / 你给参考图）"
+4. **路线倾向**："你想要 SVG 还是 APNG？两者特性差异大：[列两路线对比表]，没想好的话先选 SVG（不付费、可热改）"
 
 ---
 
@@ -57,6 +58,25 @@ skill 触发后，Claude 第一句话不要写代码，先**确认 3 件事**：
 ---
 
 ## SVG 路线工作流（skill 引导）
+
+### 第 0 步：角色拓扑盘点
+
+先不要默认角色一定有完整头、身体、手脚和嘴巴。问清：
+
+- 主体形态：只有头、头+身体、一团主体、道具/物件，还是其他轮廓；
+- 脸部结构：有没有眼睛、嘴巴、腮红、表情符号；
+- 附属结构：有没有手、脚、耳朵、尾巴、触角、翅膀、道具；
+- 支撑关系：站地、悬浮、贴边、挂载，还是靠道具支撑；
+- 目标动作：转头、抬低头、眼睛跟随、表情、走路、挥手、弹跳、漂浮。
+
+根据拓扑决定后续读哪些文档：
+
+- 有脸部方向需求 → `routes/svg/conventions/head-motion-axis.md`
+- 有主体 / 身体转向需求 → `routes/svg/conventions/body-motion-axis.md`
+- 有手脚、尾巴、触角、道具等附属结构 → `routes/svg/conventions/limb-rig-points.md`
+- 有嘴巴或多表情系统 → `routes/svg/conventions/expression-mouth-system.md`
+- 没有手脚、尾巴、触角或道具时，不要强行套附属结构 rig；退化为主体轮廓、重心 / 悬浮基准和呼吸即可
+- 没有嘴巴时，不要强行套 mouth rig；用眼睛、眉毛、腮红、表情符号或整体形变表达情绪
 
 ### 第 1 步：确定角色基础造型
 
@@ -176,9 +196,14 @@ py -3.13 -m rembg i input.png input-clean.png
 | "怎么避免踩坑" | shared/lessons.md + routes/<route>/lessons/pitfalls.md |
 | "为啥默认 SVG 不 Canvas" | routes/svg/conventions/svg-vs-canvas.md |
 | "为啥每状态一个 .svg.html 不拆" | routes/svg/conventions/single-file.md |
+| "概念图 / PNG→SVG / AI 描图 / 初始 SVG 怎么变成动画母版 / 要不要描边 / 可计算角色系统" | routes/svg/conventions/source-to-animation-master.md |
+| "角色拓扑 / 只有头 / 没有手脚 / 没有嘴巴 / 主体和附属结构怎么判断" | routes/svg/conventions/source-to-animation-master.md |
 | "怎么从 v1 改到 v2 / 锁定流程" | routes/svg/conventions/iteration.md |
 | "多状态角色母版怎么建" | routes/svg/conventions/layered-master.md |
 | "手脚/脸/尾巴怎么变形不崩" | routes/svg/conventions/rig-first.md |
+| "身体转向 / 身体轴 / 配饰跟随 / 手脚怎么接" | routes/svg/conventions/body-motion-axis.md |
+| "手部骨骼点 / 伸手 / 手伸进身体 / 抬脚 / 踮脚 / 走路 / 重心轴" | routes/svg/conventions/limb-rig-points.md |
+| "表情 / 嘴巴 / 开口嘴 / 惊讶嘴 / thinking 嘴 / 多表情复用" | routes/svg/conventions/expression-mouth-system.md |
 | "转头 / 抬头 / 低头 / 眼睛跟随 / 脸部动画 / 视线方向" | routes/svg/conventions/head-motion-axis.md |
 | "调参页怎么变成交付文件" | routes/svg/conventions/tuner-to-canonical.md |
 | "SVG 状态怎么验收" | routes/svg/conventions/validation-runbook.md |
