@@ -45,7 +45,8 @@ The toolkit does:
 - document loop/state conventions;
 - provide APNG generation/post-processing scripts;
 - provide SVG templates/presets;
-- describe a generic desktop-pet state map.
+- describe a generic desktop-pet state map;
+- document a self-build runtime workflow (minimal Electron widget + agent hooks).
 
 ## Current Status
 
@@ -53,7 +54,7 @@ The toolkit does:
 - `SKILL.md`: skill trigger and workflow guidance.
 - `routes/svg/`: SVG presets, template, conventions, lessons, and `png2svg`.
 - `routes/apng/`: prompt template, APNG workflow docs, lessons, and tools.
-- `shared/`: route-independent state map and lessons.
-- `examples/`: public-safe case-study notes.
+- `shared/`: route-independent state map, self-build runtime workflow, and lessons.
+- `examples/`: public-safe case-study notes (SVG, APNG runtime, Electron runtime).
 
 The APNG tools have basic CLI validation. Real generation still requires user-provided API keys, network access, API credits, and `ffmpeg`.

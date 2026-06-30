@@ -137,6 +137,11 @@ py -3.13 -m rembg i input.png input-clean.png
 
 按 `shared/state-map.md` 配置 theme/state 映射，接入你选择的桌宠运行时。
 
+如果用户想**自己搭运行时**（而不是套现成的 host），引导读 `shared/runtime-build.md`：
+Electron 极简挂件的 4 块架构、接 agent hooks、状态机三分类避免误判、以及打包/部署
+踩坑（`ELECTRON_RUN_AS_NODE`、asar 与 exe 绑定、文件管理器拉起等）。先确认用户真的
+需要自己搭——只想尽快看到效果就推荐现成 host。
+
 ---
 
 ## APNG 路线工作流（skill 引导）
@@ -192,6 +197,9 @@ py -3.13 -m rembg i input.png input-clean.png
 | "两条路线怎么选" | README.md §两条路线 |
 | "有没有案例参考" | examples/ |
 | "怎么接运行时" | shared/state-map.md |
+| "怎么自己搭运行时 / 自己写 Electron 挂件 / 接 agent hooks" | shared/runtime-build.md |
+| "运行时打包/部署踩坑 / 启动就崩 / asar / ELECTRON_RUN_AS_NODE" | shared/runtime-build.md |
+| "桌宠写代码途中误切 notification / 误睡 / 状态机怎么设计" | shared/runtime-build.md §状态机设计 |
 | "状态有哪些 / 怎么命名" | shared/state-map.md |
 | "怎么避免踩坑" | shared/lessons.md + routes/<route>/lessons/pitfalls.md |
 | "为啥默认 SVG 不 Canvas" | routes/svg/conventions/svg-vs-canvas.md |
@@ -254,6 +262,7 @@ skill 不是写完就完，是个**慢慢迭代的产品**。
 
 - v0.1（2026-05-02 初版）：双路线骨架铺完，hello-idle 模板入库，APNG 路线工具完成迁移与基础入口修正
 - v0.2（2026-06-17）：补 SVG 分层母版、rig-first、tuner→canonical、验证 runbook、scripted SVG 嵌入、mini host 分工、APNG 绿幕/边缘质量经验
-- v0.3 计划：长出第三只完全不同形态的桌宠（橘猫 / 机器人）证明通用性
+- v0.3（2026-06-30）：补"自己搭运行时"工作流（`shared/runtime-build.md`：Electron 极简挂件 + agent hooks + 状态机三分类 + 打包/部署踩坑）和 Electron runtime 案例
+- v0.4 计划：长出第三只完全不同形态的桌宠（橘猫 / 机器人）证明通用性
 
 当前进度详见 `CLAUDE.md` §当前进度。
