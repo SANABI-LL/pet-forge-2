@@ -262,7 +262,7 @@ skill 不是写完就完，是个**慢慢迭代的产品**。
 
 - v0.1（2026-05-02 初版）：双路线骨架铺完，hello-idle 模板入库，APNG 路线工具完成迁移与基础入口修正
 - v0.2（2026-06-17）：补 SVG 分层母版、rig-first、tuner→canonical、验证 runbook、scripted SVG 嵌入、mini host 分工、APNG 绿幕/边缘质量经验
-- v0.3（2026-06-30）：补"自己搭运行时"工作流（`shared/runtime-build.md`：Electron 极简挂件 + agent hooks + 状态机三分类 + 打包/部署踩坑）和 Electron runtime 案例
+- v0.3（2026-06-30）：补"自己搭运行时"工作流（`shared/runtime-build.md`：Electron 极简挂件 + agent hooks + 状态机三分类 + 打包/部署踩坑 + 打包成 Claude Code plugin 一键分发）和 Electron runtime 案例
 - v0.4 计划：长出第三只完全不同形态的桌宠（橘猫 / 机器人）证明通用性
 
 当前进度详见 `CLAUDE.md` §当前进度。

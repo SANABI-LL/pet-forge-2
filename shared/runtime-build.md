@@ -150,6 +150,63 @@ const MOMENTARY = theme.momentary || {};
 - 用桌面文件管理器（而非 agent 集成终端）拉起 exe，拿干净环境（见踩坑①）；
 - 部署后**实际探活 + 驱动几个状态**验证，不要只看打包成功。
 
+### 第 8 步（可选）：一键分发 —— 打包成 Claude Code plugin
+
+如果想让**别人**用你的桌宠，别让他们手动编辑 `settings.json`（一堆 hook JSON、双反斜杠、
+逗号括号，非码农劝退）。Claude Code 的 **plugin + marketplace** 机制能把这一整套 hook
+打包成"两条命令装完即用"：
+
+```
+/plugin marketplace add <owner>/<repo>
+/plugin install <plugin-name>@<marketplace-name>
+```
+
+装上后 plugin 的 hooks 会**自动合并**进用户配置，卸载时一起干净移除，用户全程不碰配置文件。
+
+**最小结构**（放仓库根，`source: "./"` 让 plugin 根=仓库根）：
+
+```
+<repo>/
+├── .claude-plugin/
+│   ├── marketplace.json   # 市场清单：name/id/owner.name/metadata/plugins[]
+│   └── plugin.json        # 插件清单：name/description/version（最少 name）
+├── hooks/
+│   └── hooks.json         # 就是第 4 步那套 事件→curl 映射
+└── scripts/
+    └── launch.sh          # SessionStart 启动器（见下）
+```
+
+**hooks.json** 就是第 4 步的映射，格式同 settings.json 的 `hooks`。事件命令里可以用
+`${CLAUDE_PLUGIN_ROOT}`（指向插件安装目录）引用打包进去的脚本，例如
+`bash "${CLAUDE_PLUGIN_ROOT}/scripts/launch.sh"`（插件的 hook 运行环境里有 bash）。
+
+**二进制怎么办**：桌宠 exe 往往几十 MB，不适合塞进 git 仓库。推荐 **SessionStart 启动器
+首次自动下载**：
+
+```bash
+# scripts/launch.sh —— 已在跑就设 idle；没跑就【后台】首次下载 exe 再拉起，绝不阻塞会话
+curl -s -m 1 http://127.0.0.1:4747/idle >/dev/null 2>&1 && exit 0
+DATA="${CLAUDE_PLUGIN_DATA:-$HOME/.<pet>}"; EXE="$DATA/<pet>.exe"
+(
+  mkdir -p "$DATA"
+  [ -s "$EXE" ] || curl -sL -m 600 -o "$EXE" "https://github.com/<owner>/<repo>/releases/download/v1.0.0/<pet>-win-x64.exe"
+  [ -s "$EXE" ] && explorer.exe "$(cygpath -w "$EXE" 2>/dev/null || echo "$EXE")"
+) >/dev/null 2>&1 &
+exit 0
+```
+
+要点：
+- **`${CLAUDE_PLUGIN_DATA}`** 是插件的持久数据目录（跨版本更新保留）——exe 下到这里，别下到
+  `${CLAUDE_PLUGIN_ROOT}`（更新插件会丢）。
+- 下载放**后台子 shell** `( … ) &` 里，SessionStart hook 立刻返回，首次会话不被 70MB 下载卡住；
+  下完兔子自己蹦出来，之后每次会话秒起（exe 已缓存）。
+- **`.sh` 必须 LF 行尾**：加 `.gitattributes` 写 `*.sh text eol=lf`，否则 Windows 上 bash
+  执行会因 CRLF 报 `\r` 错。
+
+**验收别只看"marketplace added"**：marketplace 加成功 ≠ plugin 装好。确认
+`~/.claude/plugins/installed_plugins.json` 里真的有你的 `<plugin>@<marketplace>` 条目，
+再让用户重开一个会话看 hooks 是否生效。
+
 ---
 
 ## 状态机设计：三类状态，别让兜底逻辑误判
